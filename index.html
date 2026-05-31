@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Trang chủ - MovieWeb{% endblock %}
+
+{% block content %}
+
+{% if featured_movie %}
+<div class="p-5 mb-5 rounded-4 position-relative overflow-hidden text-white shadow-lg d-flex align-items-center" 
+     style="background: linear-gradient(to right, rgba(0,0,0,0.85) 40%, rgba(0,0,0,0.2)), url('{{ featured_movie.image }}') center/cover; min-height: 400px;">
+    
+    <div class="col-md-6 z-1 position-relative">
+        <span class="badge bg-danger mb-2 px-3 py-2 text-uppercase fw-bold">Phim Nổi Bật Nhất</span>
+        <h1 class="display-4 fw-bold text-white mb-2">{{ featured_movie.title }}</h1>
+        <p class="text-warning mb-3 fw-semibold">{{ featured_movie.genre }}</p>
+        
+        <p class="card-text text-light-50 fs-5 mb-4 d-none d-md-block limit-text">
+            {{ featured_movie.desc }}
+        </p>
+        
+        <div class="d-flex gap-3">
+            <a href="{{ url_for('detail', movie_id=featured_movie.id) }}" class="btn btn-danger btn-lg px-4 fw-bold">XEM NGAY</a>
+            <a href="{{ url_for('detail', movie_id=featured_movie.id) }}" class="btn btn-outline-light btn-lg px-4">Chi tiết</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+<div class="row mb-5">
+    <div class="col-md-8 mx-auto">
+        <form action="/" method="get" class="d-flex shadow-lg rounded-pill overflow-hidden bg-secondary bg-opacity-25 p-1 border border-secondary">
+            <input class="form-control bg-transparent text-white border-0 py-2 px-4 shadow-none" type="search" name="q" placeholder="Tìm tên bộ phim bạn yêu thích..." value="{{ search_query if search_query else '' }}">
+            <button class="btn btn-danger px-4 rounded-pill fw-bold" type="submit">Tìm kiếm</button>
+        </form>
+    </div>
+</div>
+
+
+{% if search_query %}
+<h3 class="mb-4 text-muted">Kết quả tìm kiếm cho: <span class="text-white">"{{ search_query }}"</span></h3>
+{% else %}
+<h2 class="mb-4 text-light fw-bold position-relative ps-3" style="border-left: 5px solid #e50914;">Tất Cả Phim</h2>
+{% endif %}
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+    {% for movie in movies %}
+    <div class="col">
+        <div class="card h-100 bg-secondary bg-opacity-25 text-white border-0 shadow-sm position-relative overflow-hidden rounded-3">
+            <img src="{{ movie.image }}" class="card-img-top" alt="{{ movie.title }}" style="height: 320px; object-fit: cover;">
+            <div class="card-body d-flex flex-column justify-content-between p-3">
+                <div>
+                    <h6 class="card-title fw-bold text-truncate mb-1" title="{{ movie.title }}">{{ movie.title }}</h6>
+                    <p class="card-text text-warning mb-2" style="font-size: 0.8rem;">{{ movie.genre }}</p>
+                </div>
+                <a href="{{ url_for('detail', movie_id=movie.id) }}" class="btn btn-outline-light btn-sm w-100 mt-2">Xem Chi Tiết</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <p class="text-muted fs-4">Không tìm thấy bộ phim nào phù hợp.</p>
+        <a href="/" class="btn btn-sm btn-outline-danger mt-2">Quay lại Trang chủ</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
