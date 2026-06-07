@@ -107,32 +107,32 @@ movies = [
     {
         "id": 3, "title": "Moana 2", "genre": "Hoạt hình, Phiêu lưu",
         "desc": "Tiếp tục hành trình của Moana sau khi nhận được cuộc gọi bất ngờ từ tổ tiên, cô cùng thủy thủ đoàn hướng tới vùng biển xa xôi để kết nối lại các hòn đảo.",
-        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjlaCsHyHSV1Gf-tm2DEvx3Ohz6Ma6nSI9tuf3l8BM7MzBmSkWKliMKYxd&s=10"
+        "image": "https://m.media-amazon.com/images/I/91ma+sVqXgL._AC_UF1000,1000_QL80_.jpg"
     },
     {
         "id": 4, "title": "Avatar: Dòng Chảy Của Nước", "genre": "Giả tưởng, Hành động",
         "desc": "Jake Sully sống cuộc sống mới trên Pandora. Khi một mối đe dọa quen thuộc quay trở lại, anh phải cùng người Na'vi chiến đấu bảo vệ gia đình.",
-        "image": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/t6HI7m10wYpSTvPhwg6Yw0g0SjG.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/vi/thumb/5/54/Avatar_The_Way_of_Water_poster.jpg/250px-Avatar_The_Way_of_Water_poster.jpg"
     },
     {
         "id": 5, "title": "Người Nhện: Du Hành Vũ Trụ Nhện", "genre": "Hoạt hình, Hành động",
         "desc": "Miles Morales gặp lại Gwen Stacy và được phóng qua Đa vũ trụ, nơi anh chạm trán với một nhóm Người Nhện chịu trách nhiệm bảo vệ chính sự tồn tại của nó.",
-        "image": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/8VtW97g9tujg4CH6vN68vRCHpZp.jpg"
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd09g1KTzqbXS4_I4pMfOHNZa2CdJXYDZd8keSBNYQSw&s=10"
     },
     {
         "id": 6, "title": "Oppenheimer", "genre": "Lịch sử, Chính kịch",
         "desc": "Câu chuyện về nhà vật lý lý thuyết J. Robert Oppenheimer, người dẫn đầu Dự án Manhattan nhằm chế tạo ra vũ khí hạt nhân đầu tiên trên thế giới.",
-        "image": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/8G9v9nB19yZ0zR04K42j9v7wV1V.jpg"
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8-tO4V-t3OxX-unG7LdasGiwop8dUkaMt8-94IGZ1jmXDFMFczgidd6U&s=10"
     },
     {
         "id": 7, "title": "Interstellar: Hố Đen Tử Thần", "genre": "Khoa học viễn tưởng, Bí ẩn",
         "desc": "Một nhóm các nhà thám hiểm du hành qua một hố sâu trong không gian nhằm nỗ lực đảm bảo sự sống còn của nhân loại khi Trái Đất sắp bị hủy diệt.",
-        "image": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/gEU2Wthw0uOJJm783Xv3Q3mwVwZ.jpg"
+        "image": "https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/i/n/interstellar-poster-up.jpg"
     },
     {
         "id": 8, "title": "Kung Fu Panda 4", "genre": "Hoạt hình, Hài hước",
         "desc": "Po được giao trọng trách trở thành Thủ lĩnh tâm linh của Thung lũng Bình Yên và phải tìm kiếm một hậu duệ Thần Long Đại Hiệp mới trong khi đối đầu với Tắc Kè Bông.",
-        "image": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/kDp1vUBi32bWaaCmBF7YgghjLE5.jpg"
+        "image": "https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/4/7/470x700-kungfupanda4.jpg"
     }
 ]
 
