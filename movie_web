@@ -1,0 +1,11 @@
+movie_web/
+│
+├── app.py                <-- File chạy chính 
+│
+├── static/               <-- Thư mục chứa file trang trí
+│   ── style.css
+│
+└── templates/            <-- Thư mục chứa giao diện HTML
+    ── base.html
+    ── index.html
+    ── detail.html
