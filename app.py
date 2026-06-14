@@ -6,26 +6,22 @@ st.markdown("""
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <style>
-    /* 1. Đổi toàn bộ nền app sang màu đen Netflix và sửa font chữ */
     .stApp {
         background-color: #141414 !important;
         color: #ffffff !important;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
     }
     
-    /* 2. Xóa bỏ khoảng trắng thừa (Padding) mặc định ở đầu trang của Streamlit */
     .block-container {
         padding-top: 2rem !important;
         padding-bottom: 2rem !important;
     }
     
-    /* 3. Ẩn các thành phần thừa như Menu, Footer và nút GitHub của Streamlit */
     header, footer, .stDeployButton {
         visibility: hidden !important;
         height: 0 !important;
     }
     
-    /* 4. Tối ưu lại ô Tìm Kiếm để nhìn sang trọng hơn */
     .stTextInput input {
         background-color: #2b2b2b !important;
         color: #ffffff !important;
@@ -43,7 +39,6 @@ st.markdown("""
         display: none !important;
     }
     
-    /* 5. Custom lại các nút bấm Streamlit cho đồng bộ với màu đỏ Bootstrap/Netflix */
     .stButton>button {
         background-color: #e50914 !important;
         color: #ffffff !important;
@@ -60,7 +55,6 @@ st.markdown("""
         color: #ffffff !important;
     }
     
-    /* Nút Quay lại (màu trong suốt viền trắng) */
     .stButton>button[data-testid="stBaseButton-secondary"] {
         background-color: transparent !important;
         border: 1px solid #ffffff !important;
@@ -71,7 +65,6 @@ st.markdown("""
         color: #000000 !important;
     }
 
-    /* 6. Ép văn bản mô tả trên Banner chỉ hiển thị tối đa 3 dòng kèm dấu ba chấm */
     .limit-text {
         display: -webkit-box !important;
         -webkit-box-orient: vertical !important;
@@ -81,7 +74,6 @@ st.markdown("""
         color: #cccccc !important;
     }
     
-    /* 7. Hiệu ứng phóng to nhẹ khi di chuột vào các thẻ Card phim */
     .movie-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -136,17 +128,14 @@ movies = [
     }
 ]
 
-# 3. KHỞI TẠO TRẠNG THÁI CHUYỂN TRANG
 if "page" not in st.session_state:
     st.session_state.page = "home"
 if "selected_movie" not in st.session_state:
     st.session_state.selected_movie = None
 
-# --- GIAO DIỆN TRANG CHI TIẾT PHIM ---
 if st.session_state.page == "detail" and st.session_state.selected_movie:
     movie = st.session_state.selected_movie
     
-    # Nút quay lại kiểu viền trắng sang trọng
     if st.button("← Quay lại Trang chủ", key="btn_back"):
         st.session_state.page = "home"
         st.session_state.selected_movie = None
