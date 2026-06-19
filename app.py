@@ -1,4 +1,8 @@
 import streamlit as st
+import tensorflow as tf
+from PIL import Image
+import numpy as np
+import os
 
 st.set_page_config(page_title="MovieWeb", page_icon="🎬", layout="wide")
 
@@ -73,7 +77,7 @@ st.markdown("""
         text-overflow: ellipsis !important;
         color: #cccccc !important;
     }
-    
+        
     .movie-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -85,132 +89,152 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+@st.cache_resource
+def load_cnn_model():
+    model_path = r"D:\destop 15092021\CSI08\SPCK\actor_cnn_model.keras"
+    label_path = r"D:\destop 15092021\CSI08\SPCK\actor_labels.txt"
+        
+    if os.path.exists(model_path) and os.path.exists(label_path):
+        model = tf.keras.models.load_model(model_path)
+        with open(label_path, "r", encoding="utf-8") as f: # Thêm encoding="utf-8" để tránh lỗi đọc chữ tiếng Việt/ký tự đặc biệt
+            classes = [line.strip() for line in f.readlines()]
+        return model, classes
+    return None, None
+
+cnn_model, actor_classes = load_cnn_model()
+
+def predict_actor(image_data):
+    if cnn_model is None: return "Chưa có Model"
+    img = Image.open(image_data).convert('RGB').resize((150, 150))
+    img_array = np.array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    
+    predictions = cnn_model.predict(img_array)
+    score = tf.nn.softmax(predictions[0])
+    return actor_classes[np.argmax(score)].replace("_", " ")
+
+
 movies = [
     {
-        "id": 1, "title": "Dune: Hành Tinh Cát - Phần 2", "genre": "Khoa học viễn tưởng, Phiêu lưu",
-        "desc": "Paul Atreides hợp lực với Chani và người Fremen để trả thù những kẻ âm mưu hủy hoại gia đình mình. Đối mặt với sự lựa chọn giữa tình yêu của đời mình và số phận của vũ trụ.",
-        "image": "https://m.media-amazon.com/images/M/MV5BNTc0YmQxMjEtODI5MC00NjFiLTlkMWUtOGQ5NjFmYWUyZGJhXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" 
+        "id": 1, "title": "Dune: Hành Tinh Cát - Phần 2", "genre": "Khoa học viễn tưởng", 
+        "cast": ["Timothee Chalamet", "Zendaya"],
+        "desc": "Paul Atreides hợp lực với Chani và người Fremen để trả thù những kẻ âm mưu hủy hoại gia đình mình.",
+        "image": "https://i.pinimg.com/1200x/4e/76/d0/4e76d01767ce3f08fa5f522163bb7a0b.jpg" 
     },
     {
-        "id": 2, "title": "Người Kiến & Chiến Binh Ong", "genre": "Hành động, Khoa học viễn tưởng",
-        "desc": "Scott Lang với bộ đồ công nghệ siêu việt có khả năng thu nhỏ nhưng có sức mạnh lớn. Anh đồng hành cùng Hope van Dyne trong nhiệm vụ mới vào Lượng Tử Giới.",
-        "image": "https://images2.thanhnien.vn/thumb_w/686/528068263637045248/2023/2/8/ant-man-3-4x5-1675846349809495443319-0-227-858-871-crop-16758467161031369488729.jpeg" 
+        "id": 2, "title": "Avatar: Dòng Chảy Của Nước", "genre": "Giả tưởng, Hành động", 
+        "cast": ["Sam Worthington", "Zoe Saldana"],
+        "desc": "Jake Sully sống cuộc sống mới trên Pandora. Khi mối đe dọa quay trở lại, anh phải cùng tộc Na'vi chiến đấu.",
+        "image": "https://i.pinimg.com/736x/66/ec/b5/66ecb58a7db3308030eac58dbb3d39c3.jpg"
     },
     {
-        "id": 3, "title": "Moana 2", "genre": "Hoạt hình, Phiêu lưu",
-        "desc": "Tiếp tục hành trình của Moana sau khi nhận được cuộc gọi bất ngờ từ tổ tiên, cô cùng thủy thủ đoàn hướng tới vùng biển xa xôi để kết nối lại các hòn đảo.",
-        "image": "https://m.media-amazon.com/images/I/91ma+sVqXgL._AC_UF1000,1000_QL80_.jpg"
+        "id": 3, "title": "Kung Fu Panda 4", "genre": "Hoạt hình, Võ thuật", 
+        "cast": ["Jack Black", "Awkwafina"],
+        "desc": "Po trở thành Thủ lĩnh tâm linh của Thung lũng Bình Yên và phải tìm kiếm một hậu duệ Thần Long Đại Hiệp mới.",
+        "image": "https://i.pinimg.com/1200x/af/16/b4/af16b444d0868297483994d359c70da4.jpg"
     },
     {
-        "id": 4, "title": "Avatar: Dòng Chảy Của Nước", "genre": "Giả tưởng, Hành động",
-        "desc": "Jake Sully sống cuộc sống mới trên Pandora. Khi một mối đe dọa quen thuộc quay trở lại, anh phải cùng người Na'vi chiến đấu bảo vệ gia đình.",
-        "image": "https://upload.wikimedia.org/wikipedia/vi/thumb/5/54/Avatar_The_Way_of_Water_poster.jpg/250px-Avatar_The_Way_of_Water_poster.jpg"
+        "id": 4, "title": "Người Kiến & Chiến Binh Ong: Thế Giới Lượng Tử", "genre": "Hành động, Viễn tưởng", 
+        "cast": ["Paul Rudd", "Evangeline Lilly"],
+        "desc": "Gia đình Scott Lang vô tình bị hút vào Lượng Tử Giới và phải đối đầu với Kang kẻ chinh phạt.",
+        "image": "https://i.pinimg.com/736x/83/88/71/838871da115aa61b57c4ed0f18cb9ef8.jpg" 
     },
     {
-        "id": 5, "title": "Người Nhện: Du Hành Vũ Trụ Nhện", "genre": "Hoạt hình, Hành động",
-        "desc": "Miles Morales gặp lại Gwen Stacy và được phóng qua Đa vũ trụ, nơi anh chạm trán với một nhóm Người Nhện chịu trách nhiệm bảo vệ chính sự tồn tại của nó.",
-        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd09g1KTzqbXS4_I4pMfOHNZa2CdJXYDZd8keSBNYQSw&s=10"
+        "id": 5, "title": "Oppenheimer", "genre": "Lịch sử, Chính kịch", 
+        "cast": ["Cillian Murphy", "Robert Downey Jr", "Emily Blunt"],
+        "desc": "Câu chuyện về nhà vật lý lý thuyết J. Robert Oppenheimer trong việc chế tạo ra những quả bom nguyên tử đầu tiên.",
+        "image": "https://i.pinimg.com/736x/06/c8/70/06c87059cd71c7b46d8d5e25d8aab08b.jpg"
     },
     {
-        "id": 6, "title": "Oppenheimer", "genre": "Lịch sử, Chính kịch",
-        "desc": "Câu chuyện về nhà vật lý lý thuyết J. Robert Oppenheimer, người dẫn đầu Dự án Manhattan nhằm chế tạo ra vũ khí hạt nhân đầu tiên trên thế giới.",
-        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8-tO4V-t3OxX-unG7LdasGiwop8dUkaMt8-94IGZ1jmXDFMFczgidd6U&s=10"
+        "id": 6, "title": "Người Nhện: Du Hành Vũ Trụ Nhện", "genre": "Hoạt hình, Hành động", 
+        "cast": ["Shameik Moore", "Hailee Steinfeld"],
+        "desc": "Miles Morales gặp lại Gwen Stacy và bị phóng qua Đa vũ trụ, đối mặt với Liên minh Người Nhện.",
+        "image": "https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/image/1800x/71252117777b696995f01934522c402d/r/s/rsz_nguoi-nhen-2023.jpg"
     },
     {
-        "id": 7, "title": "Interstellar: Hố Đen Tử Thần", "genre": "Khoa học viễn tưởng, Bí ẩn",
-        "desc": "Một nhóm các nhà thám hiểm du hành qua một hố sâu trong không gian nhằm nỗ lực đảm bảo sự sống còn của nhân loại khi Trái Đất sắp bị hủy diệt.",
-        "image": "https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/i/n/interstellar-poster-up.jpg"
+        "id": 7, "title": "Interstellar: Hố Đen Tử Thần", "genre": "Khoa học viễn tưởng", 
+        "cast": ["Matthew McConaughey", "Anne Hathaway"],
+        "desc": "Một nhóm phi hành gia du hành qua hố đen vũ trụ để tìm kiếm một hành tinh duy trì sự sống mới cho nhân loại.",
+        "image": "https://i.pinimg.com/736x/3d/1f/12/3d1f12068833142d5cc0e6f951b4f48a.jpg"
     },
     {
-        "id": 8, "title": "Kung Fu Panda 4", "genre": "Hoạt hình, Hài hước",
-        "desc": "Po được giao trọng trách trở thành Thủ lĩnh tâm linh của Thung lũng Bình Yên và phải tìm kiếm một hậu duệ Thần Long Đại Hiệp mới trong khi đối đầu với Tắc Kè Bông.",
-        "image": "https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/4/7/470x700-kungfupanda4.jpg"
+        "id": 8, "title": "Inside Out 2: Những Mảnh Ghép Cảm Xúc", "genre": "Hoạt hình, Hài hước", 
+        "cast": ["Amy Poehler", "Maya Hawke"],
+        "desc": "Riley bước vào tuổi dậy thì, và tổng hành dinh cảm xúc bất ngờ đón nhận những thành viên mới điều khiển.",
+        "image": "https://i.pinimg.com/736x/a4/ef/18/a4ef186bd89e61ef7e5aebcd4d564482.jpg"
     }
 ]
 
-if "page" not in st.session_state:
-    st.session_state.page = "home"
-if "selected_movie" not in st.session_state:
-    st.session_state.selected_movie = None
+if "page" not in st.session_state: st.session_state.page = "home"
+if "selected_movie" not in st.session_state: st.session_state.selected_movie = None
 
 if st.session_state.page == "detail" and st.session_state.selected_movie:
     movie = st.session_state.selected_movie
-    
-    if st.button("← Quay lại Trang chủ", key="btn_back"):
+    if st.button("← Quay lại Trang chủ"):
         st.session_state.page = "home"
         st.session_state.selected_movie = None
         st.rerun()
         
-    st.write("---")
-    
     st.markdown(f"""
-        <div class="container mt-2">
-            <div class="row text-white">
-                <div class="col-md-4">
-                    <img src="{movie['image']}" class="img-fluid rounded-3 shadow-lg" style="width: 100%; max-height: 480px; object-fit: cover;">
-                </div>
+        <div class="container mt-4 text-white">
+            <div class="row">
+                <div class="col-md-4"><img src="{movie['image']}" class="img-fluid rounded-3 shadow-lg"></div>
                 <div class="col-md-8">
-                    <h1 class="display-4 fw-bold text-white" style="color: white !important;">{movie['title']}</h1>
-                    <p class="text-warning fs-5 fw-semibold">🎬 {movie['genre']}</p>
+                    <h1 class="fw-bold">{movie['title']}</h1>
+                    <p class="text-warning fs-5">🎬 {movie['genre']}</p>
+                    <p class="text-info">👥 Diễn viên chính: {', '.join(movie['cast'])}</p>
                     <hr class="border-secondary">
                     <p class="fs-5 text-light-50">{movie['desc']}</p>
                 </div>
             </div>
         </div>
     """, unsafe_allow_html=True)
-    
-    st.write(" ")
-    st.button(" XEM PHIM NGAY CHẤT LƯỢNG CAO", type="primary", key="btn_watch")
 
 else:
-    featured = movies[0]
+    st.markdown("<h1 class='text-center text-danger fw-bold mb-4'> HỆ THỐNG PHIM NETFLIX</h1>", unsafe_allow_html=True)
     
-    st.markdown(f"""
-        <div class="p-5 mb-4 rounded-4 position-relative overflow-hidden text-white shadow-lg d-flex align-items-center" 
-             style="background: linear-gradient(to right, rgba(0,0,0,0.95) 45%, rgba(0,0,0,0.3)), url('{featured['image']}') center/cover; min-height: 380px;">
-            <div class="col-md-6 position-relative" style="z-index: 10;">
-                <span class="badge bg-danger mb-2 px-3 py-2 text-uppercase fw-bold" style="font-size: 0.8rem;">Phim Nổi Bật Nhất</span>
-                <h1 class="display-4 fw-bold text-white mb-2" style="color: white !important;">{featured['title']}</h1>
-                <p class="text-warning mb-3 fw-semibold">★ {featured['genre']}</p>
-                <p class="fs-5 text-light mb-4 limit-text">{featured['desc']}</p>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
+    # st.markdown("<div class='p-3 rounded mb-4' style='background-color: #222;'><h4 class='text-white' style='margin-bottom:0;'>📷 TÌM KIẾM NÂNG CAO BẰNG HÌNH ẢNH DIỄN VIÊN</h4></div>", unsafe_allow_html=True)
     
-    if st.button("▶ XEM CHI TIẾT PHIM NỔI BẬT", key="btn_featured"):
-        st.session_state.selected_movie = featured
-        st.session_state.page = "detail"
-        st.rerun()
+    if cnn_model is None:
+        st.warning("⚠️ Chưa tìm thấy file 'actor_cnn_model.keras'. Vui l  òng chạy file train_cnn.py trước!")
+        
+    uploaded_file = st.file_uploader("Tải lên ảnh một diễn viên để tìm phim của họ:", type=["jpg", "jpeg", "png"])
+    
+    detected_actor = ""
+    if uploaded_file is not None:
+        col1, col2 = st.columns([1, 4])
+        with col1: st.image(uploaded_file, width=130, caption="Ảnh quét")
+        with col2:
+            with st.spinner("AI đang nhận diện khuôn mặt..."):
+                detected_actor = predict_actor(uploaded_file)
+                st.success(f"🎯 Kết quả nhận diện khuôn mặt: **{detected_actor}**")
 
-    st.write(" ")
-    
-    search_query = st.text_input("", placeholder="🔍 Tìm tên bộ phim bạn yêu thích...").strip()
-    
-    if search_query:
+    search_query = st.text_input("", placeholder="🔍 Hoặc nhập tên phim cần tìm...").strip()
+
+    if detected_actor:
+        filtered_movies = [m for m in movies if any(detected_actor.lower() in actor.lower() for actor in m["cast"])]
+        st.markdown(f"<h4 class='text-light mb-4'>Các phim có sự tham gia của: <span class='text-danger'>{detected_actor}</span></h4>", unsafe_allow_html=True)
+    elif search_query:
         filtered_movies = [m for m in movies if search_query.lower() in m["title"].lower()]
-        st.markdown(f"<h3 class='mb-4 text-muted'>Kết quả tìm kiếm cho: <span class='text-white'>\"{search_query}\"</span></h3>", unsafe_allow_html=True)
     else:
         filtered_movies = movies
-        st.markdown("<h2 class='mb-4 text-light fw-bold ps-3' style='border-left: 5px solid #e50914; color: white !important;'>Tất Cả Phim</h2>", unsafe_allow_html=True)
 
     if filtered_movies:
-        cols = st.columns(4)  
-        
+        cols = st.columns(4)
         for idx, movie in enumerate(filtered_movies):
             with cols[idx % 4]:
                 st.markdown(f"""
-                    <div class="card h-100 text-white border-0 shadow-sm position-relative overflow-hidden rounded-3 movie-card" style="background-color: rgba(255, 255, 255, 0.05); margin-bottom: 10px;">
-                        <img src="{movie['image']}" class="card-img-top" style="height: 300px; object-fit: cover;">
-                        <div class="card-body p-3">
-                            <h6 class="card-title fw-bold text-truncate mb-1" style="color: white !important;">{movie['title']}</h6>
-                            <p class="card-text text-warning" style="font-size: 0.8rem; margin-bottom: 0;">{movie['genre']}</p>
+                    <div class="card h-100 text-white border-0 movie-card" style="background-color: #1f1f1f; margin-bottom: 15px; border-radius: 8px; overflow:hidden;">
+                        <img src="{movie['image']}" style="height: 280px; object-fit: cover;">
+                        <div class="card-body p-2">
+                            <h6 class="fw-bold text-truncate" style='color: white !important; margin-bottom: 5px;'>{movie['title']}</h6>
+                            <p class="text-warning small" style="margin-bottom:5px;">{movie['genre']}</p>
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
-                
-                if st.button("Xem Chi Tiết", key=f"btn_{movie['id']}"):
+                if st.button("Xem Chi Tiết phim", key=f"btn_{movie['id']}"):
                     st.session_state.selected_movie = movie
                     st.session_state.page = "detail"
                     st.rerun()
     else:
-        st.markdown("<div class='text-center py-5'><p class='text-muted fs-4'>Không tìm thấy bộ phim nào phù hợp.</p></div>", unsafe_allow_html=True)
+        st.error("❌ Không tìm thấy phim nào phù hợp với từ khóa hoặc diễn viên này.")
